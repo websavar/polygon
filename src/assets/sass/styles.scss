@@ -1,0 +1,67 @@
+@import 'settings';
+
+html {
+  overflow: hidden;
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  color: $color-text;
+  background-color: $color-bg;
+  height: 100%;
+  margin: 0;
+  padding: 0 !important;
+  width: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none !important;
+
+  &:hover {
+    color: $color-primary !important;
+  }
+}
+
+.App {
+  color: $color-text;
+  font-size: 14px;
+  width: 100%;
+}
+
+// Scrollbar
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: $color-gray-light;
+  border: 1px solid $color-gray;
+
+  &:hover {
+    border: 1px solid $color-primary;
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $color-gray-dark;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 3px solid rgba(0, 0, 0, 0);
+  -webkit-border-radius: 0;
+  border-radius: 0;
+
+  &:hover {
+    background-color: $color-primary;
+  }
+}
+
+
+main {
+  height: calc(100vh - $navbar-height - 40px);
+  margin-top: $navbar-height;
+  padding: 1rem;
+}

@@ -1,0 +1,28 @@
+@import 'assets/sass/settings.scss';
+
+.navbar {
+  background-color: $color-gray;
+  border-bottom: 1px solid $color-gray;
+  @include boxShadow(0 1px 3px 0 rgba(0, 0, 0, 0.15));
+  height: $navbar-height;
+  padding: .1rem 1rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 5;
+
+  h2 {
+    color: $color-dark;
+    font-size: 22px;
+  }
+
+  a {
+    display: block;
+    padding-right: 20px;
+    width: fit-content;
+
+    img {
+      height: $logo-height;
+    }
+  }
+}

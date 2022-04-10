@@ -1,0 +1,13 @@
+@import 'assets/sass/settings.scss';
+
+footer {
+  background: $color-dark;
+  bottom: 0;
+  color: $color-gray;
+  font-size: .8rem;
+  padding: 0.6rem 1rem;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 1;
+}

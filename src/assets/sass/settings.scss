@@ -1,0 +1,34 @@
+/* colors */
+
+$color-primary: #2599c0;
+$color-secondary: #4cc0ad;
+$color-error: #c93360;
+$color-text: #fafafa;
+$color-gray-dark: #8e9295;
+$color-gray: #c7c9ca;
+$color-gray-light: #e3e4e5;
+$color-yellow: #ffcb05;
+$color-dark: #2d3438;
+$color-bg: #434a4f;
+
+$navbar-height: 52px;
+$logo-height: 42px;
+$line-height: 1.5;
+
+/* mixin */
+
+@mixin setTransition($transitions...) {
+  -webkit-transition: $transitions;
+  -moz-transition: $transitions;
+  -o-transition: $transitions;
+  -ms-transition: $transitions;
+  transition: $transitions;
+}
+
+@mixin boxShadow($shadow...) {
+  -webkit-box-shadow: $shadow;
+  -moz-box-shadow: $shadow;
+  -o-box-shadow: $shadow;
+  -ms-box-shadow: $shadow;
+  box-shadow: $shadow;
+}
