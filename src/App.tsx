@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from 'components/Navbar/navbar';
 import Footer from 'components/Footer/footer';
-import Polygon from 'components/Polygon/polygon';
+import Canvas from 'components/Canvas/canvas';
 import 'assets/sass/styles.scss';
 
 const App: React.FC = () => {
@@ -12,7 +12,7 @@ const App: React.FC = () => {
       </header>
 
       <main>
-        <Polygon />
+        <Canvas />
       </main>
 
       <Footer />

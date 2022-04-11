@@ -1,7 +1,7 @@
 @import 'assets/sass/settings.scss';
 
 footer {
-  background: $color-dark;
+  background: rgba($color: $color-dark, $alpha: 0.5);
   bottom: 0;
   color: $color-gray;
   font-size: .8rem;

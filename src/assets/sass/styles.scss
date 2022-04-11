@@ -31,35 +31,6 @@ a {
   width: 100%;
 }
 
-// Scrollbar
-
-::-webkit-scrollbar {
-  width: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background: $color-gray-light;
-  border: 1px solid $color-gray;
-
-  &:hover {
-    border: 1px solid $color-primary;
-  }
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: $color-gray-dark;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  border: 3px solid rgba(0, 0, 0, 0);
-  -webkit-border-radius: 0;
-  border-radius: 0;
-
-  &:hover {
-    background-color: $color-primary;
-  }
-}
-
-
 main {
   height: calc(100vh - $navbar-height - 40px);
   margin-top: $navbar-height;
