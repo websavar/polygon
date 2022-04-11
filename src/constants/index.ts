@@ -1,5 +1,8 @@
 export const LogoUrl: string = require('assets/images/logo.png');
 
+export const CanvasWidth = 1200;
+export const CanvasHeight = 535;
+
 export const NodeRadius = 8;
 export const LineWidth = 2;
 

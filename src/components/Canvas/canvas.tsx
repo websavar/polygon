@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './canvas.scss';
 import { drawPolygon, isClickInsideNode } from 'helper/utils';
-import { NodeRadius, LineWidth } from 'constants/index';
+import { NodeRadius, LineWidth, CanvasWidth, CanvasHeight } from 'constants/index';
 
 const initialPolygons = [
   [
@@ -19,6 +19,9 @@ const initialPolygons = [
   ]
 ];
 
+const storedPolygons = localStorage.getItem('polygons');
+const storedIsDrawing = localStorage.getItem('isDrawing');
+
 type Polygons = number[][][];
 
 let canvas: HTMLCanvasElement
@@ -27,12 +30,13 @@ let offsetX: number;
 let offsetY: number;
 let nodeIndex: number | null = null;
 let polyIndex: number | null = null;
-let isDrawing: boolean = false;
+let isDrawing: boolean = storedIsDrawing ? Boolean(storedIsDrawing) : false;
+
 
 const Canvas: React.FC = () => {
 
   const canvasRef = useRef(null);
-  const [polygons, setPolygons] = useState<Polygons>(initialPolygons);
+  const [polygons, setPolygons] = useState<Polygons>(storedPolygons ? JSON.parse(storedPolygons) : initialPolygons);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -42,6 +46,10 @@ const Canvas: React.FC = () => {
 
       ctx = canvas.getContext('2d')!;
       ctx.lineWidth = LineWidth;
+
+      if (!storedPolygons)
+        localStorage.setItem('polygons', JSON.stringify(polygons));
+
       drawPolygon(polygons, ctx, isDrawing);
     }
   }, [canvasRef]);
@@ -86,21 +94,27 @@ const Canvas: React.FC = () => {
       if (isDrawingOver(startNode, mouseX, mouseY))
         isDrawing = false;
 
-      if (isDrawing)
+      if (isDrawing) {
         polygons[polygons.length - 1].push([mouseX, mouseY]);
+        localStorage.setItem('polygons', JSON.stringify(polygons));
+        localStorage.setItem('isDrawing', JSON.stringify(isDrawing));
+      }
 
       drawPolygon(polygons, ctx, isDrawing);
     }
   };
 
   const canvasMouseUp = (): void => {
-    if (!isDrawing)
+    if (!isDrawing) {
       nodeIndex = null;
+      localStorage.setItem('polygons', JSON.stringify(polygons));
+      localStorage.setItem('isDrawing', JSON.stringify(isDrawing));
+    }
   };
 
   const canvasMouseMove = (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>): void => {
     if (nodeIndex !== null && !isDrawing) {
-      ctx.clearRect(0, 0, 1000, 800);
+      ctx.clearRect(0, 0, CanvasWidth, CanvasHeight);
       const copyPolygons = [...polygons];
 
       copyPolygons[polyIndex!][nodeIndex][0] = event.clientX - offsetX;
@@ -114,8 +128,8 @@ const Canvas: React.FC = () => {
   return (
     <div className="container-fluid h-10 p-0">
       <canvas
-        width="1000"
-        height="800"
+        width={CanvasWidth}
+        height={CanvasHeight}
         ref={canvasRef}
         onMouseDown={canvasMouseDown}
         onMouseUp={canvasMouseUp}
