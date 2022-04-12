@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './canvas.scss';
 import { drawPolygon, isClickInsideNode, setItemStorage } from 'helper/utils';
-import { NodeRadius, LineWidth, CanvasWidth, CanvasHeight } from 'constants/index';
+import { NodeRadius, LineWidth, CanvasWidth, CanvasHeight, PromptMessage } from 'constants/index';
 
 const initialPolygons = [
   [
@@ -19,11 +19,11 @@ const initialPolygons = [
   ]
 ];
 
+
 const storedPolygons = localStorage.getItem('polygons');
 const storedIsDrawing = localStorage.getItem('isDrawing');
-// localStorage.clear();
 
-type Polygons = number[][][];
+const isResumed: boolean = storedPolygons && window.confirm(PromptMessage) ? true : false;
 
 let canvas: HTMLCanvasElement
 let ctx: CanvasRenderingContext2D;
@@ -31,19 +31,14 @@ let offsetX: number;
 let offsetY: number;
 let nodeIndex: number | null = null;
 let polyIndex: number | null = null;
-let isDrawing: boolean = storedIsDrawing === 'true' ? true : false;
+let isDrawing: boolean = isResumed && storedIsDrawing === 'true' ? true : false;
 
-function checkResume(): Polygons {
-  return !storedPolygons ? initialPolygons :
-    window.confirm('Would you like to restore the previous session or create a new one?') ?
-      JSON.parse(storedPolygons) : initialPolygons;
-}
-
+type Polygons = number[][][];
 
 const Canvas: React.FC = () => {
 
   const canvasRef = useRef(null);
-  const [polygons, setPolygons] = useState<Polygons>(checkResume);
+  const [polygons, setPolygons] = useState<Polygons>(isResumed ? JSON.parse(storedPolygons!) : initialPolygons);
 
   useEffect(() => {
     if (canvasRef.current) {
