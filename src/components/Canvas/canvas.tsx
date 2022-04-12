@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './canvas.scss';
-import { drawPolygon, isClickInsideNode } from 'helper/utils';
+import { drawPolygon, isClickInsideNode, setItemStorage } from 'helper/utils';
 import { NodeRadius, LineWidth, CanvasWidth, CanvasHeight } from 'constants/index';
 
 const initialPolygons = [
@@ -30,13 +30,19 @@ let offsetX: number;
 let offsetY: number;
 let nodeIndex: number | null = null;
 let polyIndex: number | null = null;
-let isDrawing: boolean = storedIsDrawing ? Boolean(storedIsDrawing) : false;
+let isDrawing: boolean = storedIsDrawing === 'true' ? true : false;
+
+function checkResume(): Polygons {
+  return window.confirm('Would you like to restore the previous session or create a new one?') ?
+    storedPolygons ? JSON.parse(storedPolygons) : initialPolygons :
+    initialPolygons
+}
 
 
 const Canvas: React.FC = () => {
 
   const canvasRef = useRef(null);
-  const [polygons, setPolygons] = useState<Polygons>(storedPolygons ? JSON.parse(storedPolygons) : initialPolygons);
+  const [polygons, setPolygons] = useState<Polygons>(checkResume);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -96,10 +102,11 @@ const Canvas: React.FC = () => {
 
       if (isDrawing) {
         polygons[polygons.length - 1].push([mouseX, mouseY]);
-        localStorage.setItem('polygons', JSON.stringify(polygons));
-        localStorage.setItem('isDrawing', JSON.stringify(isDrawing));
+        setItemStorage(polygons);
       }
 
+      setItemStorage(undefined, isDrawing);
+      localStorage.setItem('isDrawing', JSON.stringify(isDrawing));
       drawPolygon(polygons, ctx, isDrawing);
     }
   };
@@ -107,8 +114,7 @@ const Canvas: React.FC = () => {
   const canvasMouseUp = (): void => {
     if (!isDrawing) {
       nodeIndex = null;
-      localStorage.setItem('polygons', JSON.stringify(polygons));
-      localStorage.setItem('isDrawing', JSON.stringify(isDrawing));
+      setItemStorage(polygons, isDrawing);
     }
   };
 
@@ -121,12 +127,33 @@ const Canvas: React.FC = () => {
       copyPolygons[polyIndex!][nodeIndex][1] = event.clientY - offsetY;
       setPolygons(copyPolygons);
 
-      drawPolygon(polygons, ctx, isDrawing);
+      drawPolygon(copyPolygons, ctx, isDrawing);
     }
   };
 
+  const onKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (event.ctrlKey && event.key === 'z' && polygons.length) {
+      ctx.clearRect(0, 0, CanvasWidth, CanvasHeight);
+      let copyPolygons: Polygons = [...polygons];
+
+      copyPolygons.slice(-1)[0].splice(-1, 1);
+
+      if (!copyPolygons.slice(-1)[0].length && copyPolygons.length > 1) {
+        copyPolygons.splice(-1, 1);
+        isDrawing = false;
+        nodeIndex = null;
+      } else {
+        isDrawing = true;
+      }
+      setItemStorage(copyPolygons, isDrawing);
+      setPolygons(copyPolygons);
+      drawPolygon(copyPolygons, ctx, isDrawing);
+    }
+  }
+
   return (
-    <div className="container-fluid h-10 p-0">
+    <div onKeyDown={onKeyPress} tabIndex={0} className="container-fluid h-10 p-0">
       <canvas
         width={CanvasWidth}
         height={CanvasHeight}
@@ -134,6 +161,7 @@ const Canvas: React.FC = () => {
         onMouseDown={canvasMouseDown}
         onMouseUp={canvasMouseUp}
         onMouseMove={canvasMouseMove}
+
       ></canvas>
     </div>
   )
