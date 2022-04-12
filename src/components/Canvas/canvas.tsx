@@ -21,6 +21,7 @@ const initialPolygons = [
 
 const storedPolygons = localStorage.getItem('polygons');
 const storedIsDrawing = localStorage.getItem('isDrawing');
+// localStorage.clear();
 
 type Polygons = number[][][];
 
@@ -33,9 +34,9 @@ let polyIndex: number | null = null;
 let isDrawing: boolean = storedIsDrawing === 'true' ? true : false;
 
 function checkResume(): Polygons {
-  return window.confirm('Would you like to restore the previous session or create a new one?') ?
-    storedPolygons ? JSON.parse(storedPolygons) : initialPolygons :
-    initialPolygons
+  return !storedPolygons ? initialPolygons :
+    window.confirm('Would you like to restore the previous session or create a new one?') ?
+      JSON.parse(storedPolygons) : initialPolygons;
 }
 
 
